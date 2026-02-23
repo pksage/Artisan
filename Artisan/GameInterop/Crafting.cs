@@ -797,7 +797,8 @@ public static unsafe class Crafting
                     var predictedDeltaProgress = _predictedNextStep.PrevActionFailed ? 0 : Simulator.CalculateProgress(CurCraft!, CurStep!, _predictedNextStep.PrevComboAction);
                     var predictedDeltaQuality = _predictedNextStep.PrevActionFailed ? 0 : Simulator.CalculateQuality(CurCraft!, CurStep!, _predictedNextStep.PrevComboAction);
                     var predictedDeltaDurability = _predictedNextStep.PrevComboAction == Skills.MastersMend ? 30 : _predictedNextStep.PrevComboAction == Skills.ImmaculateMend ? 100 : -Simulator.GetDurabilityCost(CurStep!, _predictedNextStep.PrevComboAction);
-                    if (predictedDeltaProgress != advancePayload->DeltaProgress)
+                    // checking a range of +/- 1 here because the game seems to do random rounding sometimes
+                    if (predictedDeltaProgress <= advancePayload->DeltaProgress - 1 || predictedDeltaProgress >= advancePayload->DeltaProgress + 1)
                         Svc.Log.Error($"Prediction error: expected progress delta {advancePayload->DeltaProgress}, got {predictedDeltaProgress}");
                     if (predictedDeltaQuality != advancePayload->DeltaQuality)
                         Svc.Log.Error($"Prediction error: expected quality delta {advancePayload->DeltaQuality}, got {predictedDeltaQuality}");
